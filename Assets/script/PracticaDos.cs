@@ -37,5 +37,20 @@ public class PracticaDos : MonoBehaviour
     }
 
     // Método Start donde generamos los valores aleatorios y llamamos a la función
-    
-    } 
+    void start()
+    {
+        // Generar tres valores aleatorios entre -100 y 100 usando Random.Range()
+        float valor1 = Random.Range(-100f, 100f);
+        float valor2 = Random.Range(-100f, 100f);
+        float valor3 = Random.Range(-100f, 100f);
+
+        // Imprimir los valores generados
+        Debug.Log("Valores generados: " + valor1 + ", " + valor2 + ", " + valor3);
+
+        // Llamar a la función CompararValores con estos valores aleatorios
+        string resultado = CompararValores(valor1, valor2, valor3);
+
+        // Imprimir el resultado en la consola
+        Debug.Log(resultado);
+    }
+}
