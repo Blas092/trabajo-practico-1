@@ -1,16 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime;
-using UnityEngine;
-
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float maxSpeed = 10f;
     public float jumpForce = 10f;
     private bool isJumping = false;
 
@@ -21,58 +17,28 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
 
     private Rigidbody2D rb;
-    public Animator animator; // Variable pública para el componente Animator
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        if (rb == null)
-        {
-            Debug.LogError("No se encontró el Rigidbody2D en el personaje.");
-            return;
-        }
-
-        // Inicializar el Animator
-        animator = GetComponent<Animator>();
-
-        // Asegurarse de que el Rigidbody2D esté configurado correctamente
-        rb.gravityScale = 1; // Ajusta según tus necesidades
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Impide que el personaje gire
     }
 
     private void Update()
     {
+        Move();
         CheckGround();
-
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             Jump();
         }
     }
 
-    private void FixedUpdate()
-    {
-        Move();
-    }
-
     private void Move()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
 
-        // Aplicar fuerza en el eje X si la velocidad actual es menor que la máxima
-        if (Mathf.Abs(rb.velocity.x) < maxSpeed)
-        {
-            rb.AddForce(new Vector2(horizontalInput * moveSpeed, 0), ForceMode2D.Impulse);
-        }
-
-        // Configurar el parámetro de velocidad en el Animator
-        if (animator != null)
-        {
-            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-        }
-
-        // Voltea el sprite al moverse a la izquierda o derecha
+        // Voltear el sprite al moverse a la izquierda o derecha
         if (horizontalInput < 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
@@ -92,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
     private void CheckGround()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
         if (isGrounded && isJumping)
         {
             isJumping = false;
